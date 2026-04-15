@@ -12,3 +12,5 @@ GreitaZita is a modern AI-powered finance tracker built specifically for beauty 
 pip install -r requirements.txt
 python run_cli.py          # or
 python run_api.py          # FastAPI back-end for poesimus.lt
+
+https://github.com/Milis37/greitazita-oop-coursework
