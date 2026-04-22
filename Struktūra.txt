@@ -1,0 +1,17 @@
+greitazita-oop-coursework/
+├── greitazita/
+│   ├── __init__.py
+│   ├── ai.py                 (UPDATED)
+│   ├── models.py             (NEW - OOP pillars)
+│   ├── builder.py            (NEW - Design pattern)
+│   ├── file_export.py        (NEW - File I/O)
+│   ├── database.py           (existing - keep)
+├── tests/
+│   ├── __init__.py           (NEW)
+│   ├── test_ai.py            (NEW - unit tests)
+├── run_cli.py                (UPDATED)
+├── run_api.py                (existing - keep)
+├── requirements.txt          (UPDATED)
+├── docker-compose.yml        (keep)
+├── README.md                 (keep, add test instructions)
+└── COURSEWORK_REPORT.md      (UPDATE - add OOP, pattern, etc.)
