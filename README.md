@@ -24,28 +24,14 @@ Users can post an activity (e.g., "Play football at 6pm") and others nearby can 
 🛠️ Tech Stack
 
     Python
-    Streamlit
-
-▶️ How to Run
-
-    Install dependencies:
-
-pip install streamlit
-
-    Run the app:
-
-streamlit run app.py
 
 👥 Team
 
-    Mighty Samson (GitHub & Setup)
-    @DangouleP
-    @MariiaChepra
     @milis37
 
 📌 Future Features
 
-    Join activity button
+    Subscription activity button
     Activity list
     User accounts
-    Task exchange system
+    Money exchange system
