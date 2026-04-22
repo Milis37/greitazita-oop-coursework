@@ -2,24 +2,10 @@
 
 Production-grade Python back-end for www.poesimus.lt.
 
-## Quick Start
-1. `docker-compose up -d` (MySQL + app)
-2. `python run_cli.py` or `python run_api.py`
-3. Open http://localhost:8000/docs for Swagger
-
-See `COURSEWORK_REPORT.md` for full academic documentation.
-
-Local Activity Connect
-
-A simple MVP app that helps people connect locally for shared activities.
-💡 Idea
-
-Users can post an activity (e.g., "Play football at 6pm") and others nearby can join.
-🚀 Features (MVP)
-
-    Add an activity
-    Optional location input
-    Display posted activity
+## Quick Start 🚀 Features (MVP)
+1. Add monthly/ quarterly/ yearly expenses
+2. Add income
+3. Receive divided money flow on display
 
 🛠️ Tech Stack
 
@@ -35,3 +21,5 @@ Users can post an activity (e.g., "Play football at 6pm") and others nearby can 
     Activity list
     User accounts
     Money exchange system
+    
+See `COURSEWORK_REPORT.md` for full academic documentation.
