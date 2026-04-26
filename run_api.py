@@ -49,14 +49,15 @@ async def add_finance(operation: FinanceOperation):
     # Apdorojame per jūsų AI (išlaikome Builder, ataskaitas, .txt export'ą)
     response = ai_instance.process_message(operation.salon_id, message)
     
-    # Struktūrizuotas įrašas CSV
-    record = {
-        'type': operation.type,
-        'amount': operation.amount,
-        'category': operation.category,
-        'description': operation.description,
-        'date': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    }
+            # 4. Generuojame ataskaitą naudojant Builder šabloną
+        builder = FinancialReportBuilder(f"Salon-{salon_id}")
+        
+        for exp in salon.expenses:
+            builder.add_expense(exp)
+        for earn in salon.earnings:
+            builder.add_earning(earn)
+
+        report = builder.add_summary().build()   # <--- čia nieko nekeisk
     
     # Išsaugome į CSV (append – duomenys kauptis, o ne perrašyti)
     file_mgr.append_to_csv(record, f"salon_{operation.salon_id}_finance.csv")
