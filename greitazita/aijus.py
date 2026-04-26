@@ -14,23 +14,22 @@ class GreitaZitaAI:
         self.db_manager = DatabaseManager()
 
     def process_message(self, salon_id: int, message: str) -> str:
-        """Pagrindinis metodas, apdorojantis žinutę ir generuojantis ataskaitą."""
         if salon_id not in self.salons:
             self.salons[salon_id] = Salon(salon_id, f"Salon-{salon_id}")
         
         salon = self.salons[salon_id]
 
-        # Ištraukiame naujus duomenis
+        # Ištraukiame naujus duomenis iš žinutės (iš frontend)
         expenses = self._extract_expenses(message)
         earnings = self._extract_earnings(message)
 
-        # Pridedame prie salono
+        # Pridedame naujus įrašus
         for exp in expenses:
             salon.add_expense(exp)
         for earn in earnings:
             salon.add_earning(earn)
 
-        # Generuojame ataskaitą
+        # Generuojame ataskaitą su VISKAI duomenimis (pajamos + išlaidos)
         builder = FinancialReportBuilder(f"Salon-{salon_id}")
         for exp in salon.expenses:
             builder.add_expense(exp)
