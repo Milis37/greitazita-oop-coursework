@@ -2,8 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime
-from greitazita.ai import GreitaZitaAI          # jei jūsų failas vadinasi ai.py
-# from greitazita.aijus import GreitaZitaAI     # jei naudojate aijus.py – pasirinkite vieną
+from greitazita.aijus import GreitaZitaAI     
 from greitazita.database import DatabaseManager
 from greitazita.file_exportas import FinanceFileManager   # pataisykite pavadinimą jei kitaip
 
