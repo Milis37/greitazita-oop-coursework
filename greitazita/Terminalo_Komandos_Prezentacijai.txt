@@ -1,0 +1,6 @@
+Ant kursinio paspaudziu desiniu mygtuku -> "New terminal at folder"
+
+Komandos:
+1. find . -not -path '*/.*' | sort
+Here is our full project structure — models, builder pattern,
+file export, tests — all following OOP principles.
