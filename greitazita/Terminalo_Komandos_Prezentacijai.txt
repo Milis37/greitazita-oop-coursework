@@ -11,4 +11,5 @@ Here we demonstrate all 4 OOP pillars — Encapsulation, Inheritance, Polymorphi
 3. cat greitazita/builderis.py
 This is our Builder design pattern — FinancialReportBuilder constructs complex report objects step by step.
 
-4.
+4. cat tests/Unit_Tests.py
+   cat tests/Case_Scenarios.py
