@@ -1,27 +1,35 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from greitazita.ai import GreitaZitaAI
+from greitazita.ai'jus import GreitaZitaAI
 from greitazita.database import DatabaseManager
 
 app = FastAPI(title="GreitaZita AI Back-end", version="1.0")
+
+# BŪTINA — leidžia Front_Endas.html prisijungti
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class ChatRequest(BaseModel):
     salon_id: int
     message: str
 
 ai_instance = GreitaZitaAI()
-db_instance = DatabaseManager()
+db = DatabaseManager()
 
 @app.post("/chat")
 async def chat(request: ChatRequest):
-    """Endpoint that poesimus.lt Jotform AI can call."""
     response = ai_instance.process_message(request.salon_id, request.message)
+    
+    # ✅ IŠSAUGOM į MySQL
+    db.save_chat_message(
+        salon_id=request.salon_id,
+        user_message=request.message,
+        ai_response=response
+    )
+    
     return {"response": response, "status": "success"}
-
-@app.get("/")
-async def root():
-    return {"message": "✅ GreitaZita Python back-end is running. Ready for poesimus.lt integration."}
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
