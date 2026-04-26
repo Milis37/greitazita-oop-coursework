@@ -1,9 +1,12 @@
 import re
 from datetime import datetime
-from .models import Salon, RentExpense, SupplyExpense, Earning
-from .builderis.py import FinancialReportBuilder  # Įsitikinkite, kad kelias teisingas
-from .file_export import FinanceFileManager      # Jūsų failų valdymo modulis
-from .database import DatabaseManager              # SQL integracija
+
+# Pataisyti importai – naudojame tikrus egzistuojančius failus tavo projekte
+from .modelis import Salon, RentExpense, SupplyExpense, Earning
+from .builderis import FinancialReportBuilder
+from .file_exportas import FinanceFileManager
+from .database import DatabaseManager
+
 
 class GreitaZitaAI:
     def __init__(self):
@@ -13,8 +16,8 @@ class GreitaZitaAI:
 
     def process_message(self, salon_id: int, message: str) -> str:
         """
-        Pagrindinis metodas, kuris apdoroja žinutę, išsaugo duomenis į DB 
-        ir sugeneruoja tekstinę ataskaitą.
+        Pagrindinis metodas, kuris apdoroja žinutę, išsaugo duomenis 
+        ir sugeneruoja ataskaitą naudojant Builder šabloną.
         """
         # 1. Gauname arba sukuriame salono objektą (Agregacija)
         if salon_id not in self.salons:
@@ -22,27 +25,16 @@ class GreitaZitaAI:
         
         salon = self.salons[salon_id]
 
-        # 2. Ištraukiame duomenis iš teksto (Regex)
+        # 2. Ištraukiame duomenis iš teksto (Regex) – veikia ir su frontend siunčiamais pranešimais
         expenses = self._extract_expenses(message)
         earnings = self._extract_earnings(message)
 
-        # 3. Pridedame prie salono objekto ir išsaugome į SQL DB
-        session = self.db_manager.get_session()
-        try:
-            for exp in expenses:
-                salon.add_expense(exp)
-                session.add(exp)  # Įrašome išlaidą į DB
-            
-            for earn in earnings:
-                salon.add_earning(earn)
-                session.add(earn) # Įrašome pajamas į DB
-            
-            session.commit()      # Patvirtiname SQL tranzakciją
-        except Exception as e:
-            session.rollback()
-            print(f"Klaida įrašant į DB: {e}")
-        finally:
-            session.close()
+        # 3. Pridedame prie salono objekto
+        for exp in expenses:
+            salon.add_expense(exp)
+        
+        for earn in earnings:
+            salon.add_earning(earn)
 
         # 4. Generuojame ataskaitą naudojant Builder šabloną
         builder = FinancialReportBuilder()
@@ -59,33 +51,33 @@ class GreitaZitaAI:
 
         return report
 
-    def _extract_expenses(self, message: str) -> list:
-        """Ieško raktažodžių 'Rent' arba 'Supplies' ir sumų."""
+    def _extract_expenses(self, message: str):
+        """Ieško išlaidų (nuoma, prekės ir kt.)"""
         expenses = []
-        message = message.lower()
+        msg_lower = message.lower()
         
-        # Nuomos paieška (Inheritance: RentExpense)
-        rent_match = re.search(r'nuoma\s+(\d+)', message) or re.search(r'rent\s+(\d+)', message)
+        # Nuomos paieška
+        rent_match = re.search(r'(nuoma|rent)\s+(\d+)', msg_lower)
         if rent_match:
-            amount = float(rent_match.group(1))
+            amount = float(rent_match.group(2))
             expenses.append(RentExpense(amount, datetime.now(), "Pagrindinis Salonas"))
-
-        # Prekių paieška (Inheritance: SupplyExpense)
-        supply_match = re.search(r'prekės\s+(\d+)', message) or re.search(r'supplies\s+(\d+)', message)
+        
+        # Prekių paieška
+        supply_match = re.search(r'(prekės|supplies)\s+(\d+)', msg_lower)
         if supply_match:
-            amount = float(supply_match.group(1))
-            expenses.append(SupplyExpense(amount, datetime.now(), "Grožio Prekės UAB"))
-            
+            amount = float(supply_match.group(2))
+            expenses.append(SupplyExpense(amount, datetime.now(), "Grožio Prekės"))
+        
         return expenses
 
-    def _extract_earnings(self, message: str) -> list:
-        """Ieško pajamų (pvz., kirpimas, paslaugos)."""
+    def _extract_earnings(self, message: str):
+        """Ieško pajamų (kirpimas, paslaugos ir kt.)"""
         earnings = []
-        message = message.lower()
+        msg_lower = message.lower()
         
-        # Pajamų paieška
-        earn_pattern = r'(kirpimas|paslaugos|earnings)\s+(\d+)'
-        matches = re.findall(earn_pattern, message)
+        earn_pattern = r'(kirpimas|paslaugos|earning|income)\s+(\d+)'
+        matches = re.findall(earn_pattern, msg_lower)
+        
         for service, amount in matches:
             earnings.append(Earning(float(amount), service.capitalize(), datetime.now()))
             
