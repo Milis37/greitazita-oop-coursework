@@ -1,18 +1,14 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from .config import DATABASE_URL
-from .models import Base
-
-class DatabaseManager:
-    _instance = None
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-            cls._instance.engine = create_engine(DATABASE_URL, echo=False)
-            Base.metadata.create_all(cls._instance.engine)
-            cls._instance.Session = sessionmaker(bind=cls._instance.engine)
-        return cls._instance
-
-    def get_session(self):
-        return self._instance.Session()
+def save_chat_message(self, salon_id: int, user_message: str, ai_response: str):
+    """Išsaugo vartotojo žinutę ir AI atsakymą į MySQL"""
+    try:
+        with self._get_session() as session:
+            record = ChatMessage(
+                salon_id=salon_id,
+                user_message=user_message,
+                ai_response=ai_response
+            )
+            session.add(record)
+            session.commit()
+            print(f"✅ Išsaugota į DB: salon_id={salon_id}")
+    except Exception as e:
+        print(f"❌ DB klaida: {e}")
