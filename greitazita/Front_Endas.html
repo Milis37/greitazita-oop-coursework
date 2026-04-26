@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <title>GreitaZita | Finansų Valdymas</title>
+    <style>
+        :root { --primary: #667eea; --secondary: #764ba2; --dark: #2d3436; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; display: flex; }
+        .sidebar { width: 250px; background: var(--dark); color: white; height: 100vh; padding: 20px; position: fixed; }
+        .main-content { margin-left: 290px; padding: 40px; width: calc(100% - 330px); }
+        .card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h1, h2 { color: var(--primary); }
+        .btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .btn:hover { background: var(--secondary); }
+        input, select { padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; width: 100%; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .status-positive { color: #27ae60; font-weight: bold; }
+        .status-negative { color: #e74c3c; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>GreitaZita AI</h2>
+        <p>Vilnius Tech OOP Projektas</p>
+        <hr>
+        <p>Vartotojas: Administratorius</p>
+        <p>Statusas: Prisijungęs</p>
+    </div>
+
+    <div class="main-content">
+        <div class="card">
+            <h1>💅 Salono Finansų Valdymas</h1>
+            <p>Sveiki sugrįžę! Įveskite šiandienos operacijas pagal savo <b>OOP modelį</b>.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="card">
+                <h2>➕ Pridėti pajamas</h2>
+                <input type="text" id="earn_desc" placeholder="Paslaugos pavadinimas (pvz. Kirpimas)">
+                <input type="number" id="earn_amount" placeholder="Suma (€)">
+                <button class="btn" onclick="addTransaction('earning')">Pridėti pajamas</button>
+            </div>
+
+            <div class="card">
+                <h2>➖ Pridėti išlaidas</h2>
+                <select id="exp_type">
+                    <option value="Rent">Nuoma (FixedExpense)</option>
+                    <option value="Supplies">Prekės (SupplyExpense)</option>
+                </select>
+                <input type="number" id="exp_amount" placeholder="Suma (€)">
+                <button class="btn" onclick="addTransaction('expense')" style="background:#e74c3c">Pridėti išlaidas</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📊 Finansinė santrauka (Real-time)</h2>
+            <div id="summary">
+                <p>Bendros pajamos: <span id="total_earnings">0</span>€</p>
+                <p>Bendros išlaidos: <span id="total_expenses">0</span>€</p>
+                <hr>
+                <h3>Grynasis pelnas: <span id="profit" class="status-positive">0</span>€</h3>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Imituojame sąveiką su jūsų Python modeliu (modelis.py) per JS logiką
+        let earnings = 0;
+        let expenses = 0;
+
+        function addTransaction(type) {
+            if (type === 'earning') {
+                const amt = parseFloat(document.getElementById('earn_amount').value);
+                if (amt > 0) earnings += amt;
+            } else {
+                const amt = parseFloat(document.getElementById('exp_amount').value);
+                if (amt > 0) expenses += amt;
+            }
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('total_earnings').innerText = earnings.toFixed(2);
+            document.getElementById('total_expenses').innerText = expenses.toFixed(2);
+            const profit = earnings - expenses;
+            const profitEl = document.getElementById('profit');
+            profitEl.innerText = profit.toFixed(2);
+            profitEl.className = profit >= 0 ? 'status-positive' : 'status-negative';
+        }
+    </script>
+</body>
+</html>
