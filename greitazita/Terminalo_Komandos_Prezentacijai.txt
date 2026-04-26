@@ -14,4 +14,5 @@ This is our Builder design pattern — FinancialReportBuilder constructs complex
 4. cat tests/Unit_Tests.py
    cat tests/Case_Scenarios.py
 
-5. python3 run_api.py
+Rodau, kaip issaugomi duomenys
+5. python run_api.py
