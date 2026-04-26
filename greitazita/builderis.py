@@ -1,5 +1,5 @@
 from typing import List
-from .models import Expense, Earning
+from .modelis import Expense, Earning
 
 class FinancialReportBuilder:
     """Builder pattern for constructing financial reports"""
