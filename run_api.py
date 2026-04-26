@@ -9,7 +9,6 @@ from greitazita.file_exportas import FinanceFileManager
 
 app = FastAPI(title="GreitaZita AI Back-end", version="1.0")
 
-# CORS – leidžia Front_Endas.html kalbėtis su backend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -23,7 +22,7 @@ class ChatRequest(BaseModel):
 
 class FinanceOperation(BaseModel):
     salon_id: int
-    type: str          # "earning" arba "expense"
+    type: str
     amount: float
     category: str
     description: str = ""
@@ -35,22 +34,15 @@ file_mgr = FinanceFileManager()
 @app.post("/chat")
 async def chat(request: ChatRequest):
     response = ai_instance.process_message(request.salon_id, request.message)
-    db.save_chat_message(
-        salon_id=request.salon_id,
-        user_message=request.message,
-        ai_response=response
-    )
+    db.save_chat_message(request.salon_id, request.message, response)
     return {"response": response, "status": "success"}
 
 @app.post("/add_finance")
 async def add_finance(operation: FinanceOperation):
-    # Sukuriame tekstinę žinutę AI apdorojimui
     message = f"{operation.type} {operation.amount} {operation.category} {operation.description}"
     
-    # Apdorojame per AI (išlaikome visus OOP + Builder)
     response = ai_instance.process_message(operation.salon_id, message)
     
-    # Struktūrizuotas įrašas CSV
     record = {
         'type': operation.type,
         'amount': operation.amount,
@@ -59,10 +51,7 @@ async def add_finance(operation: FinanceOperation):
         'date': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
     
-    # Išsaugome į CSV
     file_mgr.append_to_csv(record, f"salon_{operation.salon_id}_finance.csv")
-    
-    # Išsaugome į DB
     db.save_chat_message(operation.salon_id, message, response)
     
     return {
