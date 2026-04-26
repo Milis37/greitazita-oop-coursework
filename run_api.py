@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from greitazita.ai'jus import GreitaZitaAI
+from greitazita.aijus import GreitaZitaAI
 from greitazita.database import DatabaseManager
 
 app = FastAPI(title="GreitaZita AI Back-end", version="1.0")
