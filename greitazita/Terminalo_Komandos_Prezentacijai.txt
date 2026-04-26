@@ -4,3 +4,11 @@ Komandos:
 1. find . -not -path '*/.*' | sort
 Here is our full project structure — models, builder pattern,
 file export, tests — all following OOP principles.
+
+2. cat greitazita/modelis.py
+Here we demonstrate all 4 OOP pillars — Encapsulation, Inheritance, Polymorphism, and Abstraction.
+
+3. cat greitazita/builderis.py
+This is our Builder design pattern — FinancialReportBuilder constructs complex report objects step by step.
+
+4.
