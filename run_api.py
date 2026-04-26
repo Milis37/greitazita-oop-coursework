@@ -2,16 +2,17 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime
+
 from greitazita.aijus import GreitaZitaAI     
 from greitazita.database import DatabaseManager
-from greitazita.file_exportas import FinanceFileManager   # pataisykite pavadinimą jei kitaip
+from greitazita.file_exportas import FinanceFileManager
 
 app = FastAPI(title="GreitaZita AI Back-end", version="1.0")
 
 # CORS – leidžia Front_Endas.html kalbėtis su backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],      # kursiniui užtenka, vėliau galima susiaurinti
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -43,26 +44,25 @@ async def chat(request: ChatRequest):
 
 @app.post("/add_finance")
 async def add_finance(operation: FinanceOperation):
-    # Sukuriame tekstinę žinutę, kad jūsų esamas AI galėtų ją apdoroti
+    # Sukuriame tekstinę žinutę AI apdorojimui
     message = f"{operation.type} {operation.amount} {operation.category} {operation.description}"
     
-    # Apdorojame per jūsų AI (išlaikome Builder, ataskaitas, .txt export'ą)
+    # Apdorojame per AI (išlaikome visus OOP + Builder)
     response = ai_instance.process_message(operation.salon_id, message)
     
-            # 4. Generuojame ataskaitą naudojant Builder šabloną
-        builder = FinancialReportBuilder(f"Salon-{salon_id}")
-        
-        for exp in salon.expenses:
-            builder.add_expense(exp)
-        for earn in salon.earnings:
-            builder.add_earning(earn)
-
-        report = builder.add_summary().build()   # <--- čia nieko nekeisk
+    # Struktūrizuotas įrašas CSV
+    record = {
+        'type': operation.type,
+        'amount': operation.amount,
+        'category': operation.category,
+        'description': operation.description,
+        'date': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    }
     
-    # Išsaugome į CSV (append – duomenys kauptis, o ne perrašyti)
+    # Išsaugome į CSV
     file_mgr.append_to_csv(record, f"salon_{operation.salon_id}_finance.csv")
     
-    # Išsaugome ir į DB
+    # Išsaugome į DB
     db.save_chat_message(operation.salon_id, message, response)
     
     return {
