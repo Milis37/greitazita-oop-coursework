@@ -2,90 +2,94 @@
 <html lang="lt">
 <head>
     <meta charset="UTF-8">
-    <title>GreitaZita | Finansų Valdymas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreitaZita AI - Grožio Salono Finansai</title>
     <style>
-        :root { --primary: #667eea; --secondary: #764ba2; --dark: #2d3436; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; display: flex; }
-        .sidebar { width: 250px; background: var(--dark); color: white; height: 100vh; padding: 20px; position: fixed; }
-        .main-content { margin-left: 290px; padding: 40px; width: calc(100% - 330px); }
-        .card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        h1, h2 { color: var(--primary); }
-        .btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
-        .btn:hover { background: var(--secondary); }
-        input, select { padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; width: 100%; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .status-positive { color: #27ae60; font-weight: bold; }
-        .status-negative { color: #e74c3c; font-weight: bold; }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        input, select, button { padding: 10px; margin: 5px; font-size: 16px; }
+        button { background: #4CAF50; color: white; border: none; cursor: pointer; }
+        button:hover { background: #45a049; }
+        .summary { margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 8px; }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h2>GreitaZita AI</h2>
-        <p>Vilnius Tech OOP Projektas</p>
-        <hr>
-        <p>Vartotojas: Administratorius</p>
-        <p>Statusas: Prisijungęs</p>
-    </div>
+    <div class="container">
+        <h1>💅 GreitaZita – AI Finansų Valdymas (Vilnius Tech OOP Kursinis)</h1>
+        <p>Vartotojas: Administratorius | Salono ID: 1</p>
 
-    <div class="main-content">
-        <div class="card">
-            <h1>💅 Salono Finansų Valdymas</h1>
-            <p>Sveiki sugrįžę! Įveskite šiandienos operacijas pagal savo <b>OOP modelį</b>.</p>
-        </div>
+        <h2>➕ Pridėti pajamas</h2>
+        <input type="number" id="earningAmount" placeholder="Suma (€)" step="0.01">
+        <input type="text" id="earningCategory" placeholder="Paslauga (pvz. Kirpimas)" value="Kirpimas">
+        <input type="text" id="earningDesc" placeholder="Aprašymas (nebūtina)">
+        <button onclick="addFinance('earning')">Pridėti pajamas</button>
 
-        <div class="stats-grid">
-            <div class="card">
-                <h2>➕ Pridėti pajamas</h2>
-                <input type="text" id="earn_desc" placeholder="Paslaugos pavadinimas (pvz. Kirpimas)">
-                <input type="number" id="earn_amount" placeholder="Suma (€)">
-                <button class="btn" onclick="addTransaction('earning')">Pridėti pajamas</button>
-            </div>
+        <h2>➖ Pridėti išlaidas</h2>
+        <input type="number" id="expenseAmount" placeholder="Suma (€)" step="0.01">
+        <select id="expenseCategory">
+            <option value="Rent">Nuoma (Fixed)</option>
+            <option value="Supplies">Prekės</option>
+            <option value="Other">Kita</option>
+        </select>
+        <input type="text" id="expenseDesc" placeholder="Aprašymas (nebūtina)">
+        <button onclick="addFinance('expense')">Pridėti išlaidas</button>
 
-            <div class="card">
-                <h2>➖ Pridėti išlaidas</h2>
-                <select id="exp_type">
-                    <option value="Rent">Nuoma (FixedExpense)</option>
-                    <option value="Supplies">Prekės (SupplyExpense)</option>
-                </select>
-                <input type="number" id="exp_amount" placeholder="Suma (€)">
-                <button class="btn" onclick="addTransaction('expense')" style="background:#e74c3c">Pridėti išlaidas</button>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2>📊 Finansinė santrauka (Real-time)</h2>
-            <div id="summary">
-                <p>Bendros pajamos: <span id="total_earnings">0</span>€</p>
-                <p>Bendros išlaidos: <span id="total_expenses">0</span>€</p>
-                <hr>
-                <h3>Grynasis pelnas: <span id="profit" class="status-positive">0</span>€</h3>
-            </div>
+        <div class="summary" id="summary">
+            <h3>📊 Real-time santrauka</h3>
+            <p id="status">Laukiama duomenų...</p>
         </div>
     </div>
 
     <script>
-        // Imituojame sąveiką su jūsų Python modeliu (modelis.py) per JS logiką
-        let earnings = 0;
-        let expenses = 0;
+        async function addFinance(type) {
+            let amount, category, description;
 
-        function addTransaction(type) {
             if (type === 'earning') {
-                const amt = parseFloat(document.getElementById('earn_amount').value);
-                if (amt > 0) earnings += amt;
+                amount = parseFloat(document.getElementById('earningAmount').value);
+                category = document.getElementById('earningCategory').value;
+                description = document.getElementById('earningDesc').value || '';
             } else {
-                const amt = parseFloat(document.getElementById('exp_amount').value);
-                if (amt > 0) expenses += amt;
+                amount = parseFloat(document.getElementById('expenseAmount').value);
+                category = document.getElementById('expenseCategory').value;
+                description = document.getElementById('expenseDesc').value || '';
             }
-            updateUI();
-        }
 
-        function updateUI() {
-            document.getElementById('total_earnings').innerText = earnings.toFixed(2);
-            document.getElementById('total_expenses').innerText = expenses.toFixed(2);
-            const profit = earnings - expenses;
-            const profitEl = document.getElementById('profit');
-            profitEl.innerText = profit.toFixed(2);
-            profitEl.className = profit >= 0 ? 'status-positive' : 'status-negative';
+            if (!amount || isNaN(amount) || amount <= 0) {
+                alert("Klaida: įveskite teisingą teigiamą sumą!");
+                return;
+            }
+
+            const data = {
+                salon_id: 1,
+                type: type,
+                amount: amount,
+                category: category,
+                description: description
+            };
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/add_finance', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                document.getElementById('status').innerHTML = 
+                    `<strong>${result.message}</strong><br>Failas: ${result.saved_file}`;
+                
+                alert(result.message);
+                
+                // Išvalome laukus
+                if (type === 'earning') {
+                    document.getElementById('earningAmount').value = '';
+                } else {
+                    document.getElementById('expenseAmount').value = '';
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Klaida: negalima prisijungti prie serverio. Paleiskite run_api.py!");
+            }
         }
     </script>
 </body>
